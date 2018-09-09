@@ -6,14 +6,13 @@ var iconv = require('iconv-lite')
 const url =
   'https://d.weibo.com/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=102803&pagebar=1&tab=home&current_page=2&pre_page=1&page=1&pl_name=Pl_Core_NewMixFeed__3&id=102803&script_uri=/102803&feed_type=1&domain_op=102803&__rnd=1536469881685'
 
-const _host = 'd.weibo.com'
 const _path =
   '/p/aj/v6/mblog/mbloglist?ajwvr=6&domain=102803&pagebar=1&tab=home&current_page=2&pre_page=1&page=1&pl_name=Pl_Core_NewMixFeed__3&id=102803&script_uri=/102803&feed_type=1&domain_op=102803&__rnd=1536469881685'
 
-var getRequestData = function(host, path) {
+const getRequestData = function(path) {
   return new Promise(function(resolve, reject) {
     var options = {
-      host: host,
+      host: 'd.weibo.com',
       path: path,
       method: 'GET',
       protocol: 'https:',
@@ -40,19 +39,42 @@ var getRequestData = function(host, path) {
       })
       resp.on('end', function(chunk) {
         var wholeData = Buffer.concat(buffers)
-        console.log(wholeData)
         // var data = iconv.decode(wholeData, 'base64')
-        var data = iconv.decode(wholeData, 'utf8')
-        resolve({ data })
+        var data0 = wholeData.toString()
+        // var data = decode(wholeData, 'ASCII')
+        // var data2 = decode(wholeData, 'UTF-16LE')
+        // var data3 = decode(wholeData, 'UCS-2')
+        // var data4 = decode(wholeData, 'Binary')
+        // var data5 = decode(wholeData, 'Hex')
+        resolve({ data0 })
       })
     })
     req.end()
   })
 }
 
+const decode = function(data, type) {
+  try {
+    var result = iconv.decode(data, type)
+  } catch (err) {
+    console.error(type, err)
+  }
+  return result
+}
+
 module.exports = function addRouter(router) {
-  router.get('/test', function(req, res) {
-    getRequestData(_host, _path).then(resData => {
+  router.get('/weibo2', function(req, res) {
+    getRequestData(_path).then(resData => {
+      res.send(resData)
+    })
+  })
+
+  router.get('/weibo', function(req, res) {
+    getRequestData('/102803').then(resData => {
+      res.setHeader('Vary', 'Accept-Encoding')
+      res.setHeader('Transfer-Encoding', 'chunked')
+      // res.setHeader('Content-Encoding', 'gzip')
+      res.setHeader('Content-Type', 'text/html; charset=utf-8')
       res.send(resData)
     })
   })
