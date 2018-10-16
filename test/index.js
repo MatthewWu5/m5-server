@@ -63,6 +63,10 @@ const decode = function(data, type) {
 }
 
 module.exports = function addRouter(router) {
+  router.get('/test', function(req, res) {
+    res.send(200)
+  })
+
   router.get('/weibo2', function(req, res) {
     getRequestData(_path).then(resData => {
       res.send(resData)

@@ -15,4 +15,28 @@ module.exports = function addRouter(router) {
     console.log(req.session)
     res.send({login: 200})
   })
+  router.post('/react-ts/contacts', function(req, res){
+    const contacts = [
+      {
+        id: '8080',
+        name: {
+          first: 'John',
+          last: 'Doe'
+        },
+        phone: req.params.phoneNumber,
+        email: 'john@gmail.com'
+      },
+      {
+        id: '8081',
+        name: {
+          first: 'Bruce',
+          last: 'Wayne'
+        },
+        phone: req.params.phoneNumber,
+        email: 'bruce.wayne@gmail.com'
+      },
+    ]
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.send({ items: contacts })
+  })
 }
